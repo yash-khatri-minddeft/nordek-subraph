@@ -10,7 +10,7 @@
     "codegen": "graph codegen subgraph.yaml",
     "build": "graph build subgraph.yaml",
     "deploy:local": "graph deploy --ipfs http://localhost:5001 --node http://localhost:8020 generated/sample",
-    "deploy": "graph deploy --node <YOUR_PUBLIC_URL_OF_NODE> --ipfs https://api.thegraph.com/ipfs/ generated/sample --access-token <YOUR_AUTHORIZATION_CODE>"
+    "deploy": "graph deploy --node <YOUR_PUBLIC_URL_OF_NODE> --ipfs https://api.thegraph.com/ipfs/ <USERNAME>/<SUBGRAPH_NAME> --access-token <YOUR_AUTHORIZATION_CODE>"
   },
   "devDependencies": {
     "mustache": "^4.2.0",
