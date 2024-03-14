@@ -4,7 +4,7 @@ import { Bundle, Pair, Token } from "../generated/schema";
 import { ADDRESS_ZERO, factoryContract, ONE_BD, ZERO_BD } from "./utils";
 
 // prettier-ignore
-let WETH_ADDRESS = "0x82af49447d8a07e3bd95bd0d56f35241523fbab1";
+let WETH_ADDRESS = "0x69F18527Aa0E5E5B0B2be2E5a7376811b38709A4";
 // prettier-ignore
 let WETH_USDT_PAIR = "0xa59bd260f9707ea44551c510f714ccd482ec75d8";
 // prettier-ignore
@@ -20,7 +20,9 @@ export function getETHPriceInUSD(): BigDecimal {
     if (totalLiquidityBNB.notEqual(ZERO_BD)) {
       let usdtWeight = usdtPair.reserve0.div(totalLiquidityBNB);
       let usdcWeight = usdcPair.reserve1.div(totalLiquidityBNB);
-      return usdtPair.token1Price.times(usdtWeight).plus(usdcPair.token0Price.times(usdcWeight));
+      return usdtPair.token1Price
+        .times(usdtWeight)
+        .plus(usdcPair.token0Price.times(usdcWeight));
     } else {
       return ZERO_BD;
     }
@@ -35,7 +37,7 @@ export function getETHPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 // prettier-ignore
-let WHITELIST: string[] = "0x82af49447d8a07e3bd95bd0d56f35241523fbab1,0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9,0xaf88d065e77c8cc2239327c5edb3a432268e5831,0xff970a61a04b1ca14834a43f5de4533ebddb5cc8,0x912ce59144191c1204e64559fe8253a0e49e6548,0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f,0xda10009cbd5d07dd0cecc66161fc93d7c9000da1".split(",");
+let WHITELIST: string[] = "0x69F18527Aa0E5E5B0B2be2E5a7376811b38709A4,0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9,0xaf88d065e77c8cc2239327c5edb3a432268e5831,0xff970a61a04b1ca14834a43f5de4533ebddb5cc8,0x912ce59144191c1204e64559fe8253a0e49e6548,0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f,0xda10009cbd5d07dd0cecc66161fc93d7c9000da1".split(",");
 
 // minimum liquidity for price to get tracked
 let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString("0");
@@ -50,14 +52,23 @@ export function findEthPerToken(token: Token): BigDecimal {
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]));
+    let pairAddress = factoryContract.getPair(
+      Address.fromString(token.id),
+      Address.fromString(WHITELIST[i])
+    );
     if (pairAddress.toHex() != ADDRESS_ZERO) {
       let pair = Pair.load(pairAddress.toHex());
-      if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
+      if (
+        pair.token0 == token.id &&
+        pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+      ) {
         let token1 = Token.load(pair.token1);
         return pair.token1Price.times(token1.derivedETH as BigDecimal); // return token1 per our token * BNB per token 1
       }
-      if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)) {
+      if (
+        pair.token1 == token.id &&
+        pair.reserveETH.gt(MINIMUM_LIQUIDITY_THRESHOLD_ETH)
+      ) {
         let token0 = Token.load(pair.token0);
         return pair.token0Price.times(token0.derivedETH as BigDecimal); // return token0 per our token * BNB per token 0
       }
@@ -114,7 +125,10 @@ export function getTrackedVolumeUSD(
 
   // both are whitelist tokens, take average of both amounts
   if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
-    return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString("2"));
+    return tokenAmount0
+      .times(price0)
+      .plus(tokenAmount1.times(price1))
+      .div(BigDecimal.fromString("2"));
   }
 
   // take full value of the whitelisted token amount

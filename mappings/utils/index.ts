@@ -7,7 +7,7 @@ import { Factory as FactoryContract } from "../../generated/templates/Pair/Facto
 
 export let ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
 // prettier-ignore
-export let FACTORY_ADDRESS = "0x604244E2bE83bdEA5CD94372Db4CBE278031E7dF";
+export let FACTORY_ADDRESS = "0x0674b75592A1076cd504F9191aD49bf30df3926b";
 
 export let ZERO_BI = BigInt.fromI32(0);
 export let ONE_BI = BigInt.fromI32(1);
@@ -15,7 +15,9 @@ export let ZERO_BD = BigDecimal.fromString("0");
 export let ONE_BD = BigDecimal.fromString("1");
 export let BI_18 = BigInt.fromI32(18);
 
-export let factoryContract = FactoryContract.bind(Address.fromString(FACTORY_ADDRESS));
+export let factoryContract = FactoryContract.bind(
+  Address.fromString(FACTORY_ADDRESS)
+);
 
 export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   let bd = BigDecimal.fromString("1");
@@ -25,7 +27,10 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   return bd;
 }
 
-export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: BigInt): BigDecimal {
+export function convertTokenToDecimal(
+  tokenAmount: BigInt,
+  exchangeDecimals: BigInt
+): BigDecimal {
   if (exchangeDecimals == ZERO_BI) {
     return tokenAmount.toBigDecimal();
   }
@@ -33,7 +38,10 @@ export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: Big
 }
 
 export function isNullBnbValue(value: string): boolean {
-  return value == "0x0000000000000000000000000000000000000000000000000000000000000001";
+  return (
+    value ==
+    "0x0000000000000000000000000000000000000000000000000000000000000001"
+  );
 }
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
